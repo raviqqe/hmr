@@ -1,8 +1,17 @@
 //! Hot Module Reloading.
 
-/// Adds numbers.
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+use std::{fs::read, sync::LazyLock};
+
+/// A hot reloaded module.
+pub struct HotModule {
+    lock: LazyLock<&'static [u8]>,
+}
+
+impl HotModule {
+    /// Creates a hot reloaded module.
+    pub fn new() -> Self {
+        LazyLock::new(|| read(path).expect("readable file"))
+    }
 }
 
 #[cfg(test)]
@@ -10,8 +19,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn load_file() {
+        static FOO: LazyLock<&'static [u8]> = load("./lib.rs");
+
+        assert_eq!(&*FOO, &[]);
     }
 }
