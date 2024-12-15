@@ -30,8 +30,8 @@ impl HotModule {
     /// Loads a module.
     pub fn load(&'static self) -> RwLockReadGuard<'static, Vec<u8>> {
         self.watcher.get_or_init(|| {
-            let mut lock = self.current.write().expect("write lock");
-            *lock = read(self.path).expect("readable file");
+            let mut lock = self.current.write().unwrap();
+            *lock = read(self.path).unwrap();
 
             RecommendedWatcher::new(
                 |result| {
@@ -56,7 +56,7 @@ impl HotModule {
             }
         }
 
-        self.current.read().expect("read lock")
+        self.current.read().unwrap()
     }
 }
 
