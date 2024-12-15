@@ -6,6 +6,16 @@
 
 Hot Module Reloading (HMR) for Rust.
 
+# Examples
+
+```rust
+use hmr::HotModule;
+
+static FOO: HotModule = HotModule::new("test/foo.txt");
+
+assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
+```
+
 ## License
 
 [MIT](LICENSE)
