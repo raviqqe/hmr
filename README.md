@@ -22,13 +22,13 @@ fn modify_file(content: &str) {
     sleep(Duration::from_millis(100));
 }
 
-assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
+assert_eq!(&*FOO.load(), "foo\n".as_bytes());
 
 modify_file("Hello, HMR!\n");
 assert_eq!(&*FOO.load(), "Hello, HMR!\n".as_bytes());
 
-modify_file("Hello, world!\n");
-assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
+modify_file("foo\n");
+assert_eq!(&*FOO.load(), "foo\n".as_bytes());
 ```
 
 ## License
