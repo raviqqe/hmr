@@ -29,7 +29,7 @@ impl Deref for Guard {
 }
 
 impl HotModule {
-    /// Crates a new hot reloaded module.
+    /// Crates a module.
     pub const fn new(path: &'static str) -> Self {
         Self {
             path,
