@@ -9,11 +9,20 @@ pub struct HotModule {
 
 impl HotModule {
     /// Creates a hot reloaded module.
-    pub fn new(path: &'static str) -> Self {
+    pub const fn new(path: &'static str) -> Self {
         Self {
             lock: LazyLock::new(|| read(path).expect("readable file")),
         }
     }
+}
+
+#[macro_export]
+macro_rules! load {
+    ($name:ident, $path:literal) => {
+        static $name: HotModule = HotModule {
+            lock: LazyLock::new(|| read(path).expect("readable file")),
+        };
+    };
 }
 
 #[cfg(test)]
