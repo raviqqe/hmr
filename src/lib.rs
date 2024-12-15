@@ -1,26 +1,41 @@
 //! Hot Module Reloading.
 
-use std::{fs::read, sync::LazyLock};
+use std::{
+    fs::read,
+    sync::{LazyLock, RwLock},
+};
 
 /// A hot reloaded module.
 pub struct HotModule {
-    lock: LazyLock<&'static [u8]>,
+    current: LazyLock<Vec<u8>>,
+    next: RwLock<Option<Vec<u8>>>,
 }
 
 impl HotModule {
-    /// Creates a hot reloaded module.
-    pub const fn new(path: &'static str) -> Self {
-        Self {
-            lock: LazyLock::new(|| read(path).expect("readable file")),
+    /// Loads a module.
+    pub fn load(&self) -> &[u8] {
+        if let Ok(foo) = self.next.try_read() {
+            self.current = foo;
         }
+        *self.lock
     }
 }
 
 #[macro_export]
 macro_rules! load {
     ($name:ident, $path:literal) => {
+        mod $name {
+            use super::*;
+
+            static CONTENT: RwLock<Vec<u8>> = RwLock::new(Vec::new());
+        }
+
         static $name: HotModule = HotModule {
-            lock: LazyLock::new(|| read(path).expect("readable file")),
+            lock: LazyLock::new(|| {
+                let lock = CONTENT.write().expect("write lock");
+                *lock = read(path).expect("readable file");
+                binary.read()
+            }),
         };
     };
 }
@@ -31,8 +46,8 @@ mod tests {
 
     #[test]
     fn load_file() {
-        static FOO: LazyLock<&'static [u8]> = load("./lib.rs");
+        load!(FOO, "lib.rs");
 
-        assert_eq!(&*FOO, &[]);
+        assert_eq!(FOO.load(), &[]);
     }
 }
