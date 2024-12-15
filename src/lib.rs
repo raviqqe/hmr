@@ -2,22 +2,28 @@
 
 use std::{
     fs::read,
-    sync::{LazyLock, RwLock},
+    mem::take,
+    sync::{RwLock, RwLockReadGuard},
 };
 
 /// A hot reloaded module.
 pub struct HotModule {
-    current: LazyLock<Vec<u8>>,
+    current: RwLock<Vec<u8>>,
     next: RwLock<Option<Vec<u8>>>,
 }
 
 impl HotModule {
     /// Loads a module.
-    pub fn load(&self) -> &[u8] {
-        if let Ok(foo) = self.next.try_read() {
-            self.current = foo;
+    pub fn load(&self) -> RwLockReadGuard<Vec<u8>> {
+        if let Ok(mut content) = self.next.try_write() {
+            if let Some(content) = take(&mut *content) {
+                if let Ok(mut current) = self.current.try_write() {
+                    *current = content;
+                }
+            }
         }
-        *self.lock
+
+        self.current.read().expect("lock")
     }
 }
 
