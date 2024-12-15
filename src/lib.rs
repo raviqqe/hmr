@@ -13,11 +13,9 @@ pub struct HotModule {
 }
 
 impl HotModule {
-    pub const fn new(path: &str) -> Self {
-        let content = read(path).expect("readable file");
-
+    pub const fn new(path: &'static str) -> Self {
         Self {
-            current: RwLock::new(read(path).expect("readable file")),
+            current: RwLock::new(Vec::new()),
             next: RwLock::new(None),
         }
     }
@@ -36,27 +34,14 @@ impl HotModule {
     }
 }
 
-#[macro_export]
-macro_rules! load {
-    ($name:ident, $path:literal) => {
-        mod $name {
-            use super::*;
-
-            static CONTENT: RwLock<Vec<u8>> = RwLock::new(Vec::new());
-        }
-
-        static $name: HotModule = HotModule {};
-    };
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn load_file() {
-        load!(FOO, "lib.rs");
+        static FOO: HotModule = HotModule::new("lib.rs");
 
-        assert_eq!(FOO.load(), &[]);
+        assert_eq!(*FOO.load(), &[]);
     }
 }
