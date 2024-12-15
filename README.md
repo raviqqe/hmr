@@ -17,15 +17,19 @@ use std::time::Duration;
 const PATH: &'static str = "test/foo.txt";
 static FOO: HotModule = HotModule::new(PATH);
 
+fn delay() {
+    sleep(Duration::from_millis(100));
+}
+
 assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
 
 write(PATH, "Hello, HMR!\n").unwrap();
-sleep(Duration::from_millis(10));
+delay();
 assert_eq!(&*FOO.load(), "Hello, HMR!\n".as_bytes());
 
 
 write(PATH, "Hello, world!\n").unwrap();
-sleep(Duration::from_millis(10));
+delay();
 assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
 ```
 
