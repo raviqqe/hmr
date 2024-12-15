@@ -86,6 +86,6 @@ mod tests {
     fn load_file() {
         static FOO: HotModule = HotModule::new("test/foo.txt");
 
-        assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
+        assert_eq!(&*FOO.load(), "foo\n".as_bytes());
     }
 }
