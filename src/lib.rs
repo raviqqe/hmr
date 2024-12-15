@@ -13,6 +13,15 @@ pub struct HotModule {
 }
 
 impl HotModule {
+    pub const fn new(path: &str) -> Self {
+        let content = read(path).expect("readable file");
+
+        Self {
+            current: RwLock::new(read(path).expect("readable file")),
+            next: RwLock::new(None),
+        }
+    }
+
     /// Loads a module.
     pub fn load(&self) -> RwLockReadGuard<Vec<u8>> {
         if let Ok(mut content) = self.next.try_write() {
@@ -36,13 +45,7 @@ macro_rules! load {
             static CONTENT: RwLock<Vec<u8>> = RwLock::new(Vec::new());
         }
 
-        static $name: HotModule = HotModule {
-            lock: LazyLock::new(|| {
-                let lock = CONTENT.write().expect("write lock");
-                *lock = read(path).expect("readable file");
-                binary.read()
-            }),
-        };
+        static $name: HotModule = HotModule {};
     };
 }
 
