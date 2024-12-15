@@ -47,6 +47,7 @@ impl HotModule {
 
             RecommendedWatcher::new(
                 |result| {
+                    dbg!(&result);
                     if let Ok(Event { kind, .. }) = result {
                         if kind.is_modify() {
                             if let Ok(mut content) = self.next.write() {

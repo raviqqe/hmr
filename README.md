@@ -11,7 +11,8 @@ Hot Module Reloading (HMR) for Rust.
 ```rust
 use hmr::HotModule;
 use std::fs::write;
-use std::time::sleep;
+use std::thread::sleep;
+use std::time::Duration;
 
 const PATH: &'static str = "test/foo.txt";
 static FOO: HotModule = HotModule::new(PATH);
@@ -20,7 +21,7 @@ assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
 
 write(PATH, "Hello, HMR!\n").unwrap();
 
-sleep(1);
+sleep(Duration::from_millis(1000));
 
 assert_eq!(&*FOO.load(), "Hello, HMR!\n".as_bytes());
 ```
