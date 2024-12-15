@@ -3,6 +3,7 @@
 use std::{
     fs::read,
     mem::take,
+    ops::Deref,
     sync::{OnceLock, RwLock, RwLockReadGuard},
 };
 
@@ -14,6 +15,17 @@ pub struct HotModule {
     current: RwLock<Vec<u8>>,
     next: RwLock<Option<Vec<u8>>>,
     watcher: OnceLock<RecommendedWatcher>,
+}
+
+/// A read guard of a hot reloaded module.
+pub struct Guard(RwLockReadGuard<'static, Vec<u8>>);
+
+impl Deref for Guard {
+    type Target = [u8];
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl HotModule {
@@ -28,10 +40,10 @@ impl HotModule {
     }
 
     /// Loads a module.
-    pub fn load(&'static self) -> RwLockReadGuard<'static, Vec<u8>> {
+    pub fn load(&'static self) -> Guard {
         self.watcher.get_or_init(|| {
-            let mut lock = self.current.write().expect("write lock");
-            *lock = read(self.path).expect("readable file");
+            let mut lock = self.current.write().unwrap();
+            *lock = read(self.path).unwrap();
 
             RecommendedWatcher::new(
                 |result| {
@@ -56,7 +68,7 @@ impl HotModule {
             }
         }
 
-        self.current.read().expect("read lock")
+        Guard(self.current.read().unwrap())
     }
 }
 
@@ -68,6 +80,6 @@ mod tests {
     fn load_file() {
         static FOO: HotModule = HotModule::new("test/foo.txt");
 
-        assert_eq!(*FOO.load(), "Hello, world!\n".as_bytes());
+        assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
     }
 }
