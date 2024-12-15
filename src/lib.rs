@@ -1,13 +1,14 @@
-//! Hot Module Reloading.
+#![doc = include_str!("../README.md")]
 
 use std::{
     fs::read,
     mem::take,
     ops::Deref,
+    path::PathBuf,
     sync::{OnceLock, RwLock, RwLockReadGuard},
 };
 
-use notify::{Event, RecommendedWatcher, Watcher};
+use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
 
 /// A hot reloaded module.
 pub struct HotModule {
@@ -45,7 +46,7 @@ impl HotModule {
             let mut lock = self.current.write().unwrap();
             *lock = read(self.path).unwrap();
 
-            RecommendedWatcher::new(
+            let mut watcher = RecommendedWatcher::new(
                 |result| {
                     if let Ok(Event { kind, .. }) = result {
                         if kind.is_modify() {
@@ -57,7 +58,11 @@ impl HotModule {
                 },
                 Default::default(),
             )
-            .unwrap()
+            .unwrap();
+            watcher
+                .watch(&PathBuf::from(self.path), RecursiveMode::NonRecursive)
+                .unwrap();
+            watcher
         });
 
         // All lock functions used here must be asynchronous.
@@ -81,6 +86,6 @@ mod tests {
     fn load_file() {
         static FOO: HotModule = HotModule::new("test/foo.txt");
 
-        assert_eq!(&*FOO.load(), "Hello, world!\n".as_bytes());
+        assert_eq!(&*FOO.load(), "foo\n".as_bytes());
     }
 }
