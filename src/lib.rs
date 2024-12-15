@@ -29,7 +29,7 @@ impl Deref for Guard {
 }
 
 impl HotModule {
-    /// Crates a new hot reloaded module.
+    /// Crates a hot reloaded module.
     pub const fn new(path: &'static str) -> Self {
         Self {
             path,
@@ -39,7 +39,7 @@ impl HotModule {
         }
     }
 
-    /// Loads a module.
+    /// Loads a module content.
     pub fn load(&'static self) -> Guard {
         self.watcher.get_or_init(|| {
             let mut lock = self.current.write().unwrap();
@@ -60,6 +60,7 @@ impl HotModule {
             .unwrap()
         });
 
+        // All lock functions used here must be asynchronous.
         if let Ok(mut content) = self.next.try_write() {
             if let Some(content) = take(&mut *content) {
                 if let Ok(mut current) = self.current.try_write() {
