@@ -7,3 +7,7 @@ license-file = "./LICENSE"
 
 [dependencies]
 notify = "7.0.0"
+
+[lints.rust]
+missing_docs = "deny"
+warnings = "deny"
