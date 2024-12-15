@@ -11,14 +11,14 @@ use std::{
 use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
 
 /// A hot reloaded module.
-pub struct HotModule {
+pub struct Module {
     path: &'static str,
     current: RwLock<Vec<u8>>,
     next: RwLock<Option<Vec<u8>>>,
     watcher: OnceLock<RecommendedWatcher>,
 }
 
-/// A read guard of a hot reloaded module.
+/// A read guard of a module.
 pub struct Guard(RwLockReadGuard<'static, Vec<u8>>);
 
 impl Deref for Guard {
@@ -29,8 +29,8 @@ impl Deref for Guard {
     }
 }
 
-impl HotModule {
-    /// Crates a hot reloaded module.
+impl Module {
+    /// Creates a module.
     pub const fn new(path: &'static str) -> Self {
         Self {
             path,
@@ -40,7 +40,7 @@ impl HotModule {
         }
     }
 
-    /// Loads a module content.
+    /// Loads a content.
     pub fn load(&'static self) -> Guard {
         self.watcher.get_or_init(|| {
             let mut lock = self.current.write().unwrap();
@@ -84,7 +84,7 @@ mod tests {
 
     #[test]
     fn load_file() {
-        static FOO: HotModule = HotModule::new("test/foo.txt");
+        static FOO: Module = Module::new("test/foo.txt");
 
         assert_eq!(&*FOO.load(), "foo\n".as_bytes());
     }
