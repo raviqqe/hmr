@@ -9,8 +9,10 @@ pub struct HotModule {
 
 impl HotModule {
     /// Creates a hot reloaded module.
-    pub fn new() -> Self {
-        LazyLock::new(|| read(path).expect("readable file"))
+    pub fn new(path: &'static str) -> Self {
+        Self {
+            lock: LazyLock::new(|| read(path).expect("readable file")),
+        }
     }
 }
 
