@@ -9,13 +9,13 @@ Hot Module Reloading (HMR) for Rust.
 # Examples
 
 ```rust
-use hmr::HotModule;
+use hmr::Module;
 use std::fs::write;
 use std::thread::sleep;
 use std::time::Duration;
 
 const PATH: &'static str = "test/foo.txt";
-static FOO: HotModule = HotModule::new(PATH);
+static FOO: Module = Module::new(PATH);
 
 fn modify_file(content: &str) {
     write(PATH, content).unwrap();
