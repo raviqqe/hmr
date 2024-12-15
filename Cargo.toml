@@ -4,6 +4,7 @@ description = "Hot Module Reploading for Rust"
 version = "0.1.0"
 edition = "2021"
 license-file = "./LICENSE"
+repository = "https://github.com/raviqqe/hmr"
 
 [dependencies]
 notify = "7.0.0"
