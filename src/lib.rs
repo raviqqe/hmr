@@ -9,7 +9,7 @@ use std::{
     sync::{OnceLock, RwLock, RwLockReadGuard},
 };
 
-/// A hot reloaded module.
+/// A hot-reloaded module.
 #[derive(Debug)]
 pub struct Module {
     path: &'static str,
