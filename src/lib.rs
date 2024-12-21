@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 
+use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
 use std::{
     fs::read,
     mem::take,
@@ -7,8 +8,6 @@ use std::{
     path::PathBuf,
     sync::{OnceLock, RwLock, RwLockReadGuard},
 };
-
-use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
 
 /// A hot reloaded module.
 #[derive(Debug)]
