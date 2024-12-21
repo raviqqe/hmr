@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 
+use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
 use std::{
     fs::read,
     mem::take,
@@ -8,9 +9,8 @@ use std::{
     sync::{OnceLock, RwLock, RwLockReadGuard},
 };
 
-use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
-
-/// A hot reloaded module.
+/// A hot-reloaded module.
+#[derive(Debug)]
 pub struct Module {
     path: &'static str,
     current: RwLock<Vec<u8>>,
@@ -19,6 +19,7 @@ pub struct Module {
 }
 
 /// A read guard of a module.
+#[derive(Debug)]
 pub struct Guard(RwLockReadGuard<'static, Vec<u8>>);
 
 impl Deref for Guard {
