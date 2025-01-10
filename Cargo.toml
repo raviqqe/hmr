@@ -7,7 +7,7 @@ license-file = "./LICENSE"
 repository = "https://github.com/raviqqe/hmr"
 
 [dependencies]
-notify = "7.0.0"
+notify = "8.0.0"
 
 [lints.rust]
 missing_docs = "deny"
