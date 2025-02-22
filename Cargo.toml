@@ -2,7 +2,7 @@
 name = "hmr"
 description = "Hot Module Reploading for Rust"
 version = "0.2.2"
-edition = "2021"
+edition = "2024"
 license-file = "./LICENSE"
 repository = "https://github.com/raviqqe/hmr"
 
