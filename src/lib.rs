@@ -51,9 +51,10 @@ impl Module {
                 |result| {
                     if let Ok(Event { kind, .. }) = result
                         && kind.is_modify()
-                            && let Ok(mut content) = self.next.write() {
-                                *content = Some(read(self.path).unwrap());
-                            }
+                        && let Ok(mut content) = self.next.write()
+                    {
+                        *content = Some(read(self.path).unwrap());
+                    }
                 },
                 Default::default(),
             )
@@ -67,9 +68,10 @@ impl Module {
         // All lock functions used here must be asynchronous.
         if let Ok(mut content) = self.next.try_write()
             && let Some(content) = take(&mut *content)
-                && let Ok(mut current) = self.current.try_write() {
-                    *current = content;
-                }
+            && let Ok(mut current) = self.current.try_write()
+        {
+            *current = content;
+        }
 
         Guard(self.current.read().unwrap())
     }
