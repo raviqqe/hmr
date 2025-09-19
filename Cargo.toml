@@ -1,10 +1,10 @@
 [package]
 name = "hmr"
-description = "Hot Module Reploading for Rust"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2024"
-license-file = "./LICENSE"
+description = "Hot Module Reploading for Rust"
 repository = "https://github.com/raviqqe/hmr"
+license = "MIT"
 
 [dependencies]
 notify = "8.2.0"
