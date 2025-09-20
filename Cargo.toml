@@ -1,6 +1,6 @@
 [package]
 name = "hmr"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2024"
 description = "Hot Module Reploading for Rust"
 repository = "https://github.com/raviqqe/hmr"
