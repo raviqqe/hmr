@@ -7,7 +7,7 @@ repository = "https://github.com/raviqqe/hmr"
 license = "MIT"
 
 [dependencies]
-notify = "8.2.0"
+notify = "9.0.0"
 
 [lints.rust]
 missing_docs = "deny"
